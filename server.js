@@ -22,18 +22,19 @@ app.get("/", function (req, res) {
 
 app.get("/api/timestamp", (req,res) => {
   
-  res.json({unix: Date().now(), utc: Date().toUTCString()});
+  res.json({unix: new Date().getTime(), utc: new Date().toUTCString()});
 })
 
 app.get("/api/timestamp/:timestamp",(req,res) => {
 
-  let dateString = req.params.timestamp;
+  let dateString = req.params.timestamp;  
 
-  if(isNaN(Date.parse(dateString))) return res.json({error: "Invalid Date"});
+  let dateObject = /\d{5,}/.test(dateString)? new Date(parseInt(dateString)) : new Date(dateString);
 
-  let date = /\d{5,}/.test(dateString)? new Date(parseInt(dateString)) : new Date(dateString);
+  if(isNaN(dateObject.getTime())) return res.json({error: "Invalid Date"});
   
-  res.json({unix: date.getTime(), utc: date.toUTCString()});
+
+  res.json({unix: dateObject.getTime(), utc: dateObject.toUTCString()});
 });
 
 
